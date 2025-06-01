@@ -1,179 +1,93 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamil Learning App</title>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-            width: 100%;
-            font-family: 'Times New Roman', serif;
-            background-color: darkblue;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            text-align: center;
-        }
-        button {
-            background-color: lightblue;
-            color: black;
-            border: none;
-            padding: 15px 25px;
-            font-size: 20px;
-            margin: 15px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 80%;
-        }
-        button:hover {
-            background-color: deepskyblue;
-        }
-        img {
-            width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 10px;
-        }
-        h1, h2, p {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>தமிழ் காய்கறிகள்</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #d1ffbd, #bdf7ff);
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #2e7d32;
+    }
+    #vegetable-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #vegetable-image {
+      max-width: 300px;
+      height: auto;
+      margin: 20px 0;
+      border: 5px solid #2e7d32;
+      border-radius: 10px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+  </style>
 </head>
 <body>
-    <div class="container" id="welcome">
-        <img src="assets/images/dashboard/vegetable.jpeg" alt="Welcome">
-        <h1>மதிய வணக்கம்</h1>
-        <button onclick="loginUser()">உள்நுழை</button>
+  <h1>தமிழில் காய்கறிகள்</h1>
+  <div id="vegetable-container">
+    <img id="vegetable-image" src="" alt="Vegetable">
+    <h2 id="vegetable-name"></h2>
+    <div class="nav-buttons">
+      <button onclick="prevVegetable()">முந்தையது</button>
+      <button onclick="nextVegetable()">அடுத்தது</button>
     </div>
+  </div>
 
-    <div class="container" id="training" style="display: none;">
-        <img id="vegetableImage" src="assets/images/FirstPage/VegetableFirstPage.jpeg" alt="Training">
-        <h2>தமிழில் காய்கறிகள்</h2>
-        <p id="VegetableName"></p>
-        <button onclick="startTraining()">பயிற்சி தொடங்குக</button>
-    </div>
+  <script>
+    const vegetables = [
+      { name: "வெங்காயம்", image: "assets/images/Vegetables/onion.jpg" },
+      { name: "தக்காளி", image: "assets/images/Vegetables/tomato.jpg" },
+      { name: "முள்ளங்கி", image: "assets/images/Vegetables/radish.jpg" },
+      { name: "கேரட்", image: "assets/images/Vegetables/carrot.jpg" },
+      { name: "பீர்க்கங்காய்", image: "assets/images/Vegetables/snakegourd.jpg" },
+      { name: "புடலங்காய்", image: "assets/images/Vegetables/ashgourd.jpg" },
+      { name: "வெண்டைக்காய்", image: "assets/images/Vegetables/ladyfinger.jpg" },
+      { name: "பாகற்காய்", image: "assets/images/Vegetables/bittergourd.jpg" }
+    ];
 
-    <div class="container" id="thankYou" style="display: none;">
-        <img src="assets/images/wallpapers/logo.png" alt="Thank You">
-        <h2>நன்றி! தமிழில் காய்கறிகள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
-    </div>
+    let currentIndex = 0;
 
-    <script>
-        const vegetables = [
-            { name: "கேரட்", image: "assets/images/Vegetables/Carrot.jpg" },
-            { name: "உருளைக்கிழங்கு", image: "assets/images/Vegetables/potato.jpg" },
-            { name: "பீட்ரூட்", image: "assets/images/Vegetables/beetroot.jpg" },
-            { name: "பட்டாணி", image: "assets/images/Vegetables/peas.jpg" },
-            { name: "பீன்ஸ்", image: "assets/images/Vegetables/beans.jpg" },
-            { name: "தக்காளி", image: "assets/images/Vegetables/tomato.jpg" },
-            { name: "மாங்காய்", image: "assets/images/Vegetables/raw mango.jpg" },
-            { name: "வாழைக்காய்", image: "assets/images/Vegetables/raw banana.jpg" },
-            { name: "பாகற்காய்", image: "assets/images/Vegetables/bitter guard.jpg" }
-        ];
+    function showVegetable(index) {
+      const veg = vegetables[index];
+      document.getElementById('vegetable-image').src = veg.image;
+      document.getElementById('vegetable-name').textContent = veg.name;
+    }
 
-        let index = 0;
-        let attempts = 0;
-        const maxAttempts = 3;
+    function prevVegetable() {
+      currentIndex = (currentIndex - 1 + vegetables.length) % vegetables.length;
+      showVegetable(currentIndex);
+    }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(pageId).style.display = 'block';
-        }
+    function nextVegetable() {
+      currentIndex = (currentIndex + 1) % vegetables.length;
+      showVegetable(currentIndex);
+    }
 
-        function loginUser() {
-            alert("உள்நுழைவு வெற்றிகரமாக முடிந்தது!");
-            showPage("training");
-        }
-
-        function speak(text, callback) {
-            responsiveVoice.speak(text, "Tamil Female", {
-                onend: callback
-            });
-        }
-
-        function startTraining() {
-            if (index < vegetables.length) {
-                let veg = vegetables[index];
-                document.getElementById('VegetableName').innerText = veg.name;
-                document.getElementById('vegetableImage').src = veg.image;
-                attempts = 0;
-                speak(veg.name, () => verifyUserSpeech(veg.name));
-            } else {
-                speak("நன்றி! தமிழில் காய்கறிகள் நீங்கள் கற்றுக்கொண்டீர்கள்!", () => showPage("thankYou"));
-            }
-        }
-
-        function verifyUserSpeech(correctWord) {
-            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'ta-IN';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.start();
-
-            let timeout = setTimeout(() => {
-                recognition.stop();
-                if (attempts < maxAttempts) {
-                    attempts++;
-                    speak("மீண்டும் சொல்லுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
-                } else {
-                    speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
-                        index++;
-                        startTraining();
-                    });
-                }
-            }, 10000);
-
-            recognition.onresult = (event) => {
-                clearTimeout(timeout);
-                let result = event.results[0][0].transcript.trim();
-                if (result === correctWord) {
-                    speak("நன்றாகப் பேசினீர்! அடுத்தது.", () => {
-                        index++;
-                        startTraining();
-                    });
-                } else {
-                    if (attempts < maxAttempts) {
-                        attempts++;
-                        speak("மீண்டும் முயற்சி செய்யுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
-                    } else {
-                        speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
-                            index++;
-                            startTraining();
-                        });
-                    }
-                }
-            };
-
-            recognition.onerror = () => {
-                clearTimeout(timeout);
-                if (attempts < maxAttempts) {
-                    attempts++;
-                    speak("மீண்டும் சொல்லுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
-                } else {
-                    speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
-                        index++;
-                        startTraining();
-                    });
-                }
-            };
-        }
-    </script>
+    // Initialize first vegetable
+    showVegetable(currentIndex);
+  </script>
 </body>
 </html>
