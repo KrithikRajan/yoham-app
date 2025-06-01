@@ -69,7 +69,7 @@
 
     <div class="container" id="thankYou" style="display: none;">
         <img src="assets/images/wallpapers/logo.png" alt="Thank You">
-        <h2>நன்றி! தமிழில் காலை உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
+        <h2>நன்றி! தமிழில் காலை உணவு நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
     </div>
 
     <script>
@@ -83,7 +83,6 @@
             { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
             { name: "சாம்பார்", image: "assets/images/dashboard/சாம்பார்.jpg" },
             { name: "இடியாப்பம்", image: "assets/images/dashboard/இடியாப்பம்.jpeg" }
-
         ];
 
         let index = 0;
@@ -162,10 +161,10 @@
         }
 
         async function startTraining() {
-            for (let i = 0; i < breakfast.length; i++) {
-                await trainWord(breakfast[i]);
+            for (let i = 0; i < breakfasts.length; i++) {
+                await trainWord(breakfasts[i]);
             }
-            await speak("நன்றி! தமிழில் காலை உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
+            await speak("நன்றி! தமிழில் காலை உணவு நீங்கள் கற்றுக்கொண்டீர்கள்!");
             showPage("thankYou");
         }
     </script>
