@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamil Learning App</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Times New Roman', serif;
+            background-color: darkblue;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            text-align: center;
+        }
+        button {
+            background-color: lightblue;
+            color: black;
+            border: none;
+            padding: 15px 25px;
+            font-size: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 80%;
+        }
+        button:hover {
+            background-color: deepskyblue;
+        }
+        img {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 10px;
+        }
+        h1, h2, p {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="welcome">
+        <img src="assets/images/dashboard/vehicles.jpg" alt="Welcome">
+        <h1>மதிய வணக்கம்</h1>
+        <button onclick="loginUser()">உள்நுழை</button>
+    </div>
+
+    <div class="container" id="training" style="display: none;">
+        <img id="VehicleImage" src="assets/images/FirstPage/VehicleFirstPage.jpeg" alt="Training">
+        <h2>தமிழில் வாகனங்கள்</h2>
+        <p id="VehicleName"></p>
+        <button onclick="startTraining()">பயிற்சி தொடங்குக</button>
+    </div>
+
+    <div class="container" id="thankYou" style="display: none;">
+        <img src="assets/images/wallpapers/logo.png" alt="Thank You">
+        <h2>நன்றி! தமிழில் வாகனங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
+    </div>
+
+    <script>
+        const vehicles = [
+            { name: "மிதிவண்டி", image: "assets/images/Vehicles/cycle.jpg" },
+            { name: "பைக்", image: "assets/images/Vehicles/bike.jpg" },
+            { name: "கார்", image: "assets/images/Vehicle/car.jpg" },
+            { name: "லாரி", image: "assets/images/Vehicles/lorry.jpg" },
+            { name: "விமானம்", image: "assets/images/Vehicles/aeroplane.jpg" },
+            { name: "ஆட்டோ", image: "assets/images/Vehicles/auto.jpg" },
+            { name: "படகு", image: "assets/images/Vehicles/boat.jpg" },
+            { name: "ஜீப்", image: "assets/images/Vehicles/jeep.jpg" },
+            { name: "வேன்", image: "assets/images/Vehicles/van.jpg" },
+            { name: "பேருந்து", image: "assets/images/Vehicles/bus.jpg" }
+        ];
+
+        let index = 0;
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
+            document.getElementById(pageId).style.display = 'block';
+        }
+
+        function loginUser() {
+            alert("உள்நுழைவு வெற்றிகரமாக முடிந்தது!");
+            showPage("training");
+        }
+
+        function speak(text, callback) {
+            responsiveVoice.speak(text, "Tamil Female", {
+                onend: callback
+            });
+        }
+
+        function startTraining() {
+            if (index < vehicles.length) {
+                let vehicle = vehicles[index];
+                document.getElementById('VehicleName').innerText = vehicle.name;
+                document.getElementById('VehicleImage').src = vehicle.image;
+                attempts = 0;
+                speak(vehicle.name, () => verifyUserSpeech(vehicle.name));
+            } else {
+                speak("நன்றி! தமிழில் வாகனங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!", () => showPage("thankYou"));
+            }
+        }
+
+        function verifyUserSpeech(correctWord) {
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'ta-IN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            let timeout = setTimeout(() => {
+                recognition.stop();
+                if (attempts < maxAttempts) {
+                    attempts++;
+                    speak("மீண்டும் சொல்லுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
+                } else {
+                    speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
+                        index++;
+                        startTraining();
+                    });
+                }
+            }, 10000);
+
+            recognition.onresult = (event) => {
+                clearTimeout(timeout);
+                let result = event.results[0][0].transcript.trim();
+                if (result === correctWord) {
+                    speak("நன்றாகப் பேசினீர்! அடுத்தது.", () => {
+                        index++;
+                        startTraining();
+                    });
+                } else {
+                    if (attempts < maxAttempts) {
+                        attempts++;
+                        speak("மீண்டும் முயற்சி செய்யுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
+                    } else {
+                        speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
+                            index++;
+                            startTraining();
+                        });
+                    }
+                }
+            };
+
+            recognition.onerror = () => {
+                clearTimeout(timeout);
+                if (attempts < maxAttempts) {
+                    attempts++;
+                    speak("மீண்டும் சொல்லுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
+                } else {
+                    speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
+                        index++;
+                        startTraining();
+                    });
+                }
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Schedule Assistant</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: url('assets/images/wallpapers/dashboard.jpg') no-repeat center center fixed;
+      background-size: cover;
+      padding: 40px;
+      color: #fff;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 25px;
+      margin: 15px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 2px 2px 4px #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>YOHAM SPEECH APP</h1>
+  <h1>உங்கள் தினசரி திட்ட உதவியாளர்</h1>
+  <button onclick="scheduleLogic()">திட்டத்தைச் சரிபார்க்க</button>
+  <button onclick="sayTime()">தற்போதைய நேரம் சொல்லவும்</button>
+  <button onclick="startSpeechPractice()">பேச்சுப் பயிற்சி</button>
+
+  <script>
+    function getCurrentMinutes() {
+      const now = new Date();
+      return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function sayTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const message = `தற்போதைய நேரம் ${hours} மணி மற்றும் ${minutes} நிமிடங்கள்`;
+      responsiveVoice.speak(message, "Tamil Female");
+    }
+
+    function redirectTo(page, speakText) {
+      responsiveVoice.speak(speakText, "Tamil Female");
+      setTimeout(() => {
+        window.location.href = page;
+      }, 3000);
+    }
+
+    function scheduleLogic() {
+      const mins = getCurrentMinutes();
+
+      if (mins >= 480 && mins < 510) {
+        redirectTo("morningWish.html", "காலை வணக்கம்! இன்று ஒரு அருமையான நாளாக இருக்கட்டும்.");
+      } else if (mins >= 510 && mins < 540) {
+        redirectTo("breakfast.html", "இப்போது காலை உணவைச் சாப்பிடுங்கள்.");
+      } else if (mins >= 540 && mins < 570) {
+        redirectTo("Testing-fruits.html", "இந்த பழங்களைப் பற்றிப் படிக்கலாம்.");
+      } else if (mins >= 570 && mins < 600) {
+        redirectTo("Vegetables.html", "இப்போது காய்கறிகளைப் பற்றி தெரிந்துகொள்வோம்.");
+      } else if (mins >= 720 && mins < 750) {
+        redirectTo("lunch.html", "இப்போது மதிய உணவை எடுத்துக்கொள்ளவும்.");
+      } else if (mins >= 750 && mins < 780) {
+        redirectTo("Birds.html", "பறவைகள் பற்றிய தகவல்களுக்கு செல்லுங்கள்.");
+      } else if (mins >= 780 && mins < 810) {
+        redirectTo("Animals.html", "இப்போது விலங்குகளைப் பற்றி தெரிந்துகொள்வோம்.");
+      } else if (mins >= 1080 && mins < 1110) {
+        redirectTo("eveningWish.html", "மாலை வணக்கம்! எப்படி இருந்தது இன்றைய நாள்?");
+      } else if (mins >= 1110 && mins < 1140) {
+        redirectTo("dinner.html", "இப்போது இரவு உணவை எடுத்துக்கொள்ளவும்.");
+      } else if (mins >= 1140 && mins < 1170) {
+        redirectTo("Numbers.html", "இப்போது எண்கள் பற்றிய பயிற்சிக்கு செல்லலாம்.");
+      } else if (mins >= 1170 && mins < 1200) {
+        redirectTo("Vehicles.html", "வாகனங்களைப் பற்றி தெரிந்து கொள்வோம்.");
+      } else if (mins >= 1260) {
+        redirectTo("night.html", "இனி இரவு நேரம்! இனிய கனவுகள். மாத்திரைகளை எடுத்துக்கொள்ள மறக்காதீர்கள்.");
+      } else {
+        responsiveVoice.speak("தற்போதைய நேரத்திற்கு திட்டமிடல் இல்லை.", "Tamil Female");
+      }
+    }
+
+    function startSpeechPractice() {
+  responsiveVoice.speak("பேச்சுப் பயிற்சி தொடங்குகிறது.", "Tamil Female");
+  setTimeout(() => {
+    window.location.href = "Games.html";
+  }, 3000);
+}
+
+  </script>
+</body>
+</html>

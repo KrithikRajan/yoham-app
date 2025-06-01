@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>பேச்சுப் பயிற்சி</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: #0e0e0e;
+      padding: 40px;
+      color: #fff;
+    }
+    h1 {
+      margin-bottom: 30px;
+      color: #fff;
+      text-shadow: 2px 2px 4px #000;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .option {
+      width: 180px;
+      height: 180px;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .option:hover {
+      transform: scale(1.05);
+      background-color: #333;
+    }
+    .option img {
+      width: 100%;
+      height: 100px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .option p {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>பேச்சுப் பயிற்சி தேர்வுகள்</h1>
+  <div class="container">
+    <div class="option" onclick="speakAndGo('Animals.html', 'விலங்குகள் பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/dashboard/animals.jpg" alt="Animals">
+      <p>விலங்குகள்</p>
+    </div>
+    <div class="option" onclick="speakAndGo('Birds.html', 'பறவைகள் பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/dashboard/birds.jpg" alt="Birds">
+      <p>பறவைகள்</p>
+    </div>
+    <div class="option" onclick="speakAndGo('Numbers.html', 'எண்கள் பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/dashboard/numbers.jpeg" alt="Numbers">
+      <p>எண்கள்</p>
+    </div>
+    <div class="option" onclick="speakAndGo('Vehicles.html', 'வாகனங்கள் பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/dashboard/vehicles.jpg" alt="Vehicles">
+      <p>வாகனங்கள்</p>
+    </div>
+    <div class="option" onclick="speakAndGo('Testing-fruits.html', 'பழங்கள் பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/dashboard/fruits.jpg" alt="Fruits">
+      <p>பழங்கள்</p>
+    </div>
+      <div class="option" onclick="speakAndGo('MoreAnimals.html', 'மேலும் விலங்குகள் பயிற்சிக்கு செல்லலாம்')">
+        <img src="assets/images/dashboard/vegetable.jpeg" alt="More Animals">
+        <p>காய்கறிகள்</p>
+    </div>
+    <div class="option" onclick="speakAndGo('breakfast.html', 'இப்போது காலை உணவு பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/breakfast bg.jpg" alt="Breakfast">
+      <p>காலை உணவு</p>
+    </div>
+    <div class="option" onclick="speakAndGo('lunch.html', 'இப்போது மதிய உணவு பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/lunch bg.jpg" alt="Lunch">
+      <p>மதிய உணவு</p>
+    </div>
+    <div class="option" onclick="speakAndGo('dinner.html', 'இப்போது இரவு உணவு பயிற்சிக்கு செல்லலாம்')">
+      <img src="assets/images/dinner bg.jpg" alt="Dinner">
+      <p>இரவு உணவு</p>
+    </div>
+  </div>
+
+  <script>
+    function speakAndGo(page, text) {
+      responsiveVoice.speak(text, "Tamil Female");
+      setTimeout(() => {
+        window.location.href = page;
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOHAM SPEECH APP</title>
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px 20px;
+      margin: 0;
+      background: url('assets/images/wallpapers/dashboard.jpg') no-repeat center center fixed;
+      background-size: cover;
+      text-align: center;
+      color: white;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .logo {
+      width: 100px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 2em;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+      margin-bottom: 20px;
+    }
+
+    .login-img {
+      width: 200px;
+      height: auto;
+      margin: 20px auto;
+      display: block;
+    }
+
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 12px;
+      width: 85%;
+      max-width: 350px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 12px 25px;
+      background: #5c67f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+      font-size: 1em;
+      width: 85%;
+      max-width: 350px;
+    }
+
+    button:hover {
+      background: #3f4cc1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo image -->
+  <img src="assets/images/wallpapers/logo.png" alt="App Logo" class="logo" />
+  <h2>YOHAM SPEECH APP</h2>
+  <h2>Login</h2>
+
+  <!-- Login-themed image -->
+  <img src="assets/images/wallpapers/login.jpg" alt="Login Icon" class="login-img" />
+
+  <input type="email" id="loginEmail" placeholder="Email" />
+  <input type="password" id="loginPassword" placeholder="Password" />
+  <button onclick="login()">Login</button>
+
+  <script>
+    function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const storedUser = localStorage.getItem(email);
+      if (!storedUser) return alert("User not found");
+
+      const userObj = JSON.parse(storedUser);
+      if (userObj.password !== password) {
+        alert("Incorrect password");
+        return;
+      }
+
+      alert("Login successful!");
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>
