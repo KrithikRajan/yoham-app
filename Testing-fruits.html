@@ -56,17 +56,17 @@
 </head>
 <body>
     <div class="container" id="welcome">
-        <img src="assets/images/dashboard/fruits.jpg" alt="Welcome">
+        <img src="assets/images/dashboard/numbers.jpg" alt="Welcome">
         <h1>வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
-    
+
     <div class="container" id="training" style="display: none;">
-        <img id="FruitsImage" src="" alt="Training">
+        <img id="NumberImage" src="" alt="Training">
         <h2>தமிழில் பழங்கள்</h2>
-        <p id="FruitName"></p>
+        <p id="NumberName"></p>
     </div>
-    
+
     <div class="container" id="thankYou" style="display: none;">
         <img src="assets/images/wallpapers/logo.png" alt="Thank You">
         <h2>நன்றி! தமிழில் பழங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
@@ -134,8 +134,8 @@
 
         async function trainWord(wordObj) {
             const { name, image } = wordObj;
-            document.getElementById("FruitsName").innerText = name;
-            document.getElementById("FruitsImage").src = image;
+            document.getElementById("NumberName").innerText = name;
+            document.getElementById("NumberImage").src = image;
 
             let attempts = 0;
             while (attempts < maxAttempts) {
@@ -162,8 +162,8 @@
         }
 
         async function startTraining() {
-            for (let i = 0; i < fruits.length; i++) {
-                await trainWord(fruits[i]);
+            for (let i = 0; i < numbers.length; i++) {
+                await trainWord(numbers[i]);
             }
             await speak("நன்றி! தமிழில் பழங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
             showPage("thankYou");
