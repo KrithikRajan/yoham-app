@@ -58,14 +58,14 @@
 <body>
     <div class="container" id="welcome">
         <img src="assets/images/dashboard/fruits.jpg" alt="Welcome">
-        <h1>மாலை வணக்கம்</h1>
+        <h1>இரவு வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="BreakfastImage" src="assets/images/dinner bg.jpg" alt="Training">
+        <img id="LunchImage" src="assets/images/dinner bg.jpg" alt="Training">
         <h2>தமிழில் இரவு உணவு வகைகள்</h2>
-        <p id="BreakfastName"></p>
+        <p id="LunchName"></p>
         <button onclick="startTraining()">பயிற்சி தொடங்குக</button>
     </div>
 
@@ -75,7 +75,7 @@
     </div>
 
     <script>
-        const breakfasts = [
+        const dinners = [
             { name: "இட்லி", image: "assets/images/dashboard/இட்லி.jpg" },
             { name: "தோசை", image: "assets/images/dashboard/தோசை.jpg" },
             { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
@@ -85,6 +85,10 @@
             { name: "சப்பாத்தி", image: "assets/images/dashboard/சப்பாத்தி.jpg" },
             { name: "பூரி", image: "assets/images/dashboard/பூரி.jpg" },
             { name: "ஆப்பம்", image: "assets/images/dashboard/ஆப்பம்.jpg" }
+
+            
+
+            
         ];
 
         let index = 0;
@@ -108,12 +112,12 @@
         }
 
         function startTraining() {
-            if (index < breakfasts.length) {
-                let breakfast = breakfasts[index];
-                document.getElementById('BreakfastName').innerText = breakfast.name;
-                document.getElementById('BreakfastImage').src = breakfast.image;
+            if (index < dinner.length) {
+                let dinner = dinners[index];
+                document.getElementById('DinnerName').innerText = dinner.name;
+                document.getElementById('DinnerImage').src = dinner.image;
                 attempts = 0;
-                speak(breakfast.name, () => verifyUserSpeech(breakfast.name));
+                speak(dinner.name, () => verifyUserSpeech(dinner.name));
             } else {
                 speak("நன்றி! இரவு உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!", () => showPage("thankYou"));
             }
