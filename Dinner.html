@@ -2,11 +2,10 @@
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tamil Learning App</title>
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
     <style>
-        * {
+         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -57,16 +56,15 @@
 </head>
 <body>
     <div class="container" id="welcome">
-        <img src="assets/images/dashboard/fruits.jpg" alt="Welcome">
+        <img src="assets/images/dinner bg.jpg" alt="Welcome">
         <h1>இரவு வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="DinnerImage" src="assets/images/dinner bg.jpg" alt="Training">
-        <h2>தமிழில் இரவு உணவு வகைகள்</h2>
+        <img id="DinnerImage" src="" alt="Training">
+        <h2>தமிழில் இரவு உணவு</h2>
         <p id="DinnerName"></p>
-        <button onclick="startTraining()">பயிற்சி தொடங்குக</button>
     </div>
 
     <div class="container" id="thankYou" style="display: none;">
@@ -75,105 +73,98 @@
     </div>
 
     <script>
-        const dinners = [
+        const breakfasts = [
             { name: "இட்லி", image: "assets/images/dashboard/இட்லி.jpg" },
             { name: "தோசை", image: "assets/images/dashboard/தோசை.jpg" },
-            { name: "வடை", image: "assets/images/dashboard/வடை.jpg" },
-            { name: "சப்பாத்தி", image: "assets/images/dashboard/சப்பாத்தி.jpg" },
-            { name: "பூரி", image: "assets/images/dashboard/பூரி.jpg" },
-            { name: "பொங்கல்", image: "assets/images/dashboard/பொங்கல்.jpg" },
             { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
             { name: "சாம்பார்", image: "assets/images/dashboard/சாம்பார்.jpg" },
-            { name: "இடியாப்பம்", image: "assets/images/dashboard/இடியாப்பம்.jpeg" }
-
+            { name: "வடை", image: "assets/images/dashboard/வடை.jpg" },
+            { name: "கிச்சடி", image: "assets/images/dashboard/கிச்சடி.jpg" },
+            { name: "சப்பாத்தி", image: "assets/images/dashboard/சப்பாத்தி.jpg" },
+            { name: "பூரி", image: "assets/images/dashboard/பூரி.jpg" },
+            { name: "ஆப்பம்", image: "assets/images/dashboard/ஆப்பம்.jpg" }
         ];
-
         let index = 0;
-        let attempts = 0;
-        const maxAttempts = 3;
-
-        function showPage(pageId) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(pageId).style.display = 'block';
-        }
+        const maxAttempts = 10;
 
         function loginUser() {
             alert("உள்நுழைவு வெற்றிகரமாக முடிந்தது!");
             showPage("training");
+            startTraining();
         }
 
-        function speak(text, callback) {
-            responsiveVoice.speak(text, "Tamil Female", {
-                onend: callback
+        function showPage(id) {
+            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function speak(text) {
+            return new Promise(resolve => {
+                responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
             });
         }
 
-        function startTraining() {
-            if (index < dinners.length) {
-                let dinner = dinners[index];
-                document.getElementById('DinnerName').innerText = dinner.name;
-                document.getElementById('DinnerImage').src = dinner.image;
-                attempts = 0;
-                speak(dinner.name, () => verifyUserSpeech(dinner.name));
-            } else {
-                speak("நன்றி! தமிழில் இரவு உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!", () => showPage("thankYou"));
-            }
+        function listen() {
+            return new Promise((resolve, reject) => {
+                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'ta-IN';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                let timeout = setTimeout(() => {
+                    recognition.abort();
+                    reject("timeout");
+                }, 10000);
+
+                recognition.onresult = (event) => {
+                    clearTimeout(timeout);
+                    resolve(event.results[0][0].transcript.trim());
+                };
+
+                recognition.onerror = () => {
+                    clearTimeout(timeout);
+                    reject("error");
+                };
+
+                recognition.start();
+            });
         }
 
-        function verifyUserSpeech(correctWord) {
-            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'ta-IN';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+        async function trainWord(wordObj) {
+            const { name, image } = wordObj;
+            document.getElementById("DinnerName").innerText = name;
+            document.getElementById("DInnerImage").src = image;
 
-            recognition.start();
-
-            let timeout = setTimeout(() => {
-                recognition.stop();
-                if (attempts < maxAttempts) {
-                    attempts++;
-                    speak("மீண்டும் சொல்லுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
-                } else {
-                    speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
-                        index++;
-                        startTraining();
-                    });
-                }
-            }, 20000);
-
-            recognition.onresult = (event) => {
-                clearTimeout(timeout);
-                let result = event.results[0][0].transcript.trim();
-                if (result === correctWord) {
-                    speak("நன்றாகப் பேசினீர்! அடுத்தது.", () => {
-                        index++;
-                        startTraining();
-                    });
-                } else {
-                    if (attempts < maxAttempts) {
-                        attempts++;
-                        speak("மீண்டும் முயற்சி செய்யுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
+            let attempts = 0;
+            while (attempts < maxAttempts) {
+                await speak(name);
+                try {
+                    const userSaid = await listen();
+                    if (userSaid === name) {
+                        await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
+                        return;
                     } else {
-                        speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
-                            index++;
-                            startTraining();
-                        });
+                        attempts++;
+                        if (attempts < maxAttempts) {
+                            await speak("மீண்டும் முயற்சி செய்யுங்கள்: " + name);
+                        }
+                    }
+                } catch (e) {
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        await speak("தவறு ஏற்பட்டது. மீண்டும் முயற்சி செய்யுங்கள்: " + name);
                     }
                 }
-            };
+            }
+            await speak("அடுத்த வார்த்தைக்கு செல்லலாம்.");
+        }
 
-            recognition.onerror = () => {
-                clearTimeout(timeout);
-                if (attempts < maxAttempts) {
-                    attempts++;
-                    speak("மீண்டும் சொல்லுங்கள்: " + correctWord, () => verifyUserSpeech(correctWord));
-                } else {
-                    speak("அடுத்த வார்த்தைக்கு செல்லலாம்.", () => {
-                        index++;
-                        startTraining();
-                    });
-                }
-            };
+        async function startTraining() {
+            for (let i = 0; i < dinner.length; i++) {
+                await trainWord(dinner[i]);
+            }
+            await speak("நன்றி! தமிழில் இரவு உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
+            showPage("thankYou");
         }
     </script>
 </body>
