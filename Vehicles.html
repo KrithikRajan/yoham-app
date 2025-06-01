@@ -56,34 +56,34 @@
 </head>
 <body>
     <div class="container" id="welcome">
-        <img src="assets/images/dashboard/VehicleFirstPage.jpeg" alt="Welcome">
-        <h1>வணக்கம்</h1>
+        <img src="assets/images/dashboard/animals.jpg" alt="Welcome">
+        <h1>மதிய வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="VehicleImage" src="" alt="Training">
-        <h2>தமிழில் வாகனங்கள்</h2>
-        <p id="VehicleName"></p>
+        <img id="AnimalImage" src="" alt="Training">
+        <h2>தமிழில் விலங்குகள்</h2>
+        <p id="AnimalName"></p>
     </div>
 
     <div class="container" id="thankYou" style="display: none;">
         <img src="assets/images/wallpapers/logo.png" alt="Thank You">
-        <h2>நன்றி! தமிழில் வாகனங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
+        <h2>நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
     </div>
 
     <script>
-        const vehicles = [
-            { name: "மிதிவண்டி", image: "assets/images/Vehicles/cycle.jpg" },
-            { name: "பைக்", image: "assets/images/Vehicles/bike.jpg" },
-            { name: "கார்", image: "assets/images/Vehicle/car.jpg" },
-            { name: "லாரி", image: "assets/images/Vehicles/lorry.jpg" },
-            { name: "விமானம்", image: "assets/images/Vehicles/aeroplane.jpg" },
-            { name: "ஆட்டோ", image: "assets/images/Vehicles/auto.jpg" },
-            { name: "படகு", image: "assets/images/Vehicles/boat.jpg" },
-            { name: "ஜீப்", image: "assets/images/Vehicles/jeep.jpg" },
-            { name: "வேன்", image: "assets/images/Vehicles/van.jpg" },
-            { name: "பேருந்து", image: "assets/images/Vehicles/bus.jpg" }
+        const animals = [
+            { name: "நாய்", image: "assets/images/Animals/Dog.jpg" },
+            { name: "பூனை", image: "assets/images/Animals/cat.jpg" },
+            { name: "யானை", image: "assets/images/Animals/elephant.jpg" },
+            { name: "குதிரை", image: "assets/images/Animals/horse.jpg" },
+            { name: "சிங்கம்", image: "assets/images/Animals/lion.jpg" },
+            { name: "புலி", image: "assets/images/Animals/Tiger.jpg" },
+            { name: "ஆடு", image: "assets/images/Animals/Goat.jpg" },
+            { name: "முயல்", image: "assets/images/Animals/rabbit.jpg" },
+            { name: "ஒட்டகச்சிவிங்கி", image: "assets/images/Animals/girafee.jpg" },
+            { name: "குரங்கு", image: "assets/images/Animals/Monkey.jpg" }
         ];
 
         let index = 0;
@@ -134,8 +134,8 @@
 
         async function trainWord(wordObj) {
             const { name, image } = wordObj;
-            document.getElementById("VehicleName").innerText = name;
-            document.getElementById("VehicleImage").src = image;
+            document.getElementById("AnimalName").innerText = name;
+            document.getElementById("AnimalImage").src = image;
 
             let attempts = 0;
             while (attempts < maxAttempts) {
@@ -162,10 +162,10 @@
         }
 
         async function startTraining() {
-            for (let i = 0; i < vehicle.length; i++) {
-                await trainWord(vehicle[i]);
+            for (let i = 0; i < animals.length; i++) {
+                await trainWord(animals[i]);
             }
-            await speak("நன்றி! தமிழில் வாகனங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
+            await speak("நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
             showPage("thankYou");
         }
     </script>
