@@ -56,15 +56,15 @@
 </head>
 <body>
     <div class="container" id="welcome">
-        <img src="assets/images/dashboard/animals.jpg" alt="Welcome">
+        <img src="assets/images/dashboard/birds.jpg" alt="Welcome">
         <h1>மதிய வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="AnimalImage" src="" alt="Training">
+        <img id="BirdImage" src="" alt="Training">
         <h2>தமிழில் பறவைகள்</h2>
-        <p id="AnimalName"></p>
+        <p id="BirdName"></p>
     </div>
 
     <div class="container" id="thankYou" style="display: none;">
@@ -133,8 +133,8 @@
 
         async function trainWord(wordObj) {
             const { name, image } = wordObj;
-            document.getElementById("AnimalName").innerText = name;
-            document.getElementById("AnimalImage").src = image;
+            document.getElementById("BirdName").innerText = name;
+            document.getElementById("BirdImage").src = image;
 
             let attempts = 0;
             while (attempts < maxAttempts) {
@@ -161,8 +161,8 @@
         }
 
         async function startTraining() {
-            for (let i = 0; i < animals.length; i++) {
-                await trainWord(animals[i]);
+            for (let i = 0; i < birds.length; i++) {
+                await trainWord(birds[i]);
             }
             await speak("நன்றி! தமிழில் பறவைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
             showPage("thankYou");
