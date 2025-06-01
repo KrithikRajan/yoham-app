@@ -56,15 +56,15 @@
 </head>
 <body>
     <div class="container" id="welcome">
-        <img src="assets/images/dashboard/VegetablesFirstPage.jpeg" alt="Welcome">
+        <img src="assets/images/dashboard/vegetable.jpeg" alt="Welcome">
         <h1>வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="VegetableImage" src="" alt="Training">
+        <img id="vegetablesImage" src="" alt="Training">
         <h2>தமிழில் காய்கறிகள்</h2>
-        <p id="VegetableName"></p>
+        <p id="vegetablesName"></p>
     </div>
 
     <div class="container" id="thankYou" style="display: none;">
@@ -133,8 +133,8 @@
 
         async function trainWord(wordObj) {
             const { name, image } = wordObj;
-            document.getElementById("VegetablesName").innerText = name;
-            document.getElementById("VegetablesImage").src = image;
+            document.getElementById("vegetablesName").innerText = name;
+            document.getElementById("vegetablesImage").src = image;
 
             let attempts = 0;
             while (attempts < maxAttempts) {
