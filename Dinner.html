@@ -63,9 +63,9 @@
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="LunchImage" src="assets/images/dinner bg.jpg" alt="Training">
+        <img id="BreakfastImage" src="assets/images/breakfast bg.jpg" alt="Training">
         <h2>தமிழில் இரவு உணவு வகைகள்</h2>
-        <p id="LunchName"></p>
+        <p id="BreakfastName"></p>
         <button onclick="startTraining()">பயிற்சி தொடங்குக</button>
     </div>
 
@@ -75,18 +75,18 @@
     </div>
 
     <script>
-        const dinners = [
+        const breakfasts = [
             { name: "இட்லி", image: "assets/images/dashboard/இட்லி.jpg" },
             { name: "தோசை", image: "assets/images/dashboard/தோசை.jpg" },
-            { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
-            { name: "சாம்பார்", image: "assets/images/dashboard/சாம்பார்.jpg" },
             { name: "வடை", image: "assets/images/dashboard/வடை.jpg" },
-            { name: "கிச்சடி", image: "assets/images/dashboard/கிச்சடி.jpg" },
             { name: "சப்பாத்தி", image: "assets/images/dashboard/சப்பாத்தி.jpg" },
             { name: "பூரி", image: "assets/images/dashboard/பூரி.jpg" },
-            { name: "ஆப்பம்", image: "assets/images/dashboard/ஆப்பம்.jpg" }
+            { name: "பொங்கல்", image: "assets/images/dashboard/பொங்கல்.jpg" },
+            { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
+            { name: "சாம்பார்", image: "assets/images/dashboard/சாம்பார்.jpg" },
+            { name: "இடியாப்பம்", image: "assets/images/dashboard/இடியாப்பம்.jpeg" }
 
-            ];
+        ];
 
         let index = 0;
         let attempts = 0;
@@ -109,14 +109,14 @@
         }
 
         function startTraining() {
-            if (index < dinner.length) {
-                let dinner = dinners[index];
-                document.getElementById('DinnerName').innerText = dinner.name;
-                document.getElementById('DinnerImage').src = dinner.image;
+            if (index < breakfasts.length) {
+                let breakfast = breakfasts[index];
+                document.getElementById('BreakfastName').innerText = breakfast.name;
+                document.getElementById('BreakfastImage').src = breakfast.image;
                 attempts = 0;
-                speak(dinner.name, () => verifyUserSpeech(dinner.name));
+                speak(breakfast.name, () => verifyUserSpeech(breakfast.name));
             } else {
-                speak("நன்றி! இரவு உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!", () => showPage("thankYou"));
+                speak("நன்றி! தமிழில் இரவு உணவு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!", () => showPage("thankYou"));
             }
         }
 
@@ -139,7 +139,7 @@
                         startTraining();
                     });
                 }
-            }, 10000);
+            }, 20000);
 
             recognition.onresult = (event) => {
                 clearTimeout(timeout);
