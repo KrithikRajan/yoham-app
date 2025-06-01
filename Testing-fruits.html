@@ -56,15 +56,15 @@
 </head>
 <body>
     <div class="container" id="welcome">
-        <img src="assets/images/dashboard/numbers.jpg" alt="Welcome">
+        <img src="assets/images/dashboard/fruits.jpg" alt="Welcome">
         <h1>வணக்கம்</h1>
         <button onclick="loginUser()">உள்நுழை</button>
     </div>
 
     <div class="container" id="training" style="display: none;">
-        <img id="NumberImage" src="" alt="Training">
+        <img id="fruitsImage" src="" alt="Training">
         <h2>தமிழில் பழங்கள்</h2>
-        <p id="NumberName"></p>
+        <p id="fruitsName"></p>
     </div>
 
     <div class="container" id="thankYou" style="display: none;">
@@ -85,7 +85,6 @@
             { name: "அன்னாசிப்பழம்", image: "assets/images/Fruits/pineapple.jpg" },
             { name: "ஆரஞ்சு", image: "assets/images/Fruits/orange.jpeg" }
         ];
-
         let index = 0;
         const maxAttempts = 10;
 
@@ -134,8 +133,8 @@
 
         async function trainWord(wordObj) {
             const { name, image } = wordObj;
-            document.getElementById("NumberName").innerText = name;
-            document.getElementById("NumberImage").src = image;
+            document.getElementById("fruitsName").innerText = name;
+            document.getElementById("fruitsImage").src = image;
 
             let attempts = 0;
             while (attempts < maxAttempts) {
@@ -162,10 +161,10 @@
         }
 
         async function startTraining() {
-            for (let i = 0; i < numbers.length; i++) {
-                await trainWord(numbers[i]);
+            for (let i = 0; i < fruits.length; i++) {
+                await trainWord(fruits[i]);
             }
-            await speak("நன்றி! தமிழில் பழங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
+            await speak("நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
             showPage("thankYou");
         }
     </script>
