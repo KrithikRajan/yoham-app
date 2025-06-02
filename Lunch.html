@@ -161,8 +161,8 @@
         }
 
         async function startTraining() {
-            for (let i = 0; i < lunch.length; i++) {
-                await trainWord(lunch[i]);
+            for (let i = 0; i < lunchs.length; i++) {
+                await trainWord(lunchs[i]);
             }
             await speak("நன்றி! தமிழில் மதிய சாப்பாடு வகைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
             showPage("thankYou");
