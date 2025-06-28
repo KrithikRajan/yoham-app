@@ -2,7 +2,7 @@
 <html lang="ta">
 <head>
   <meta charset="UTF-8" />
-  <title>Tamil Learning App - Birds</title>
+  <title>Tamil Learning App</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
@@ -42,8 +42,8 @@
 </head>
 <body>
   <div class="container" id="app">
-    <img src="assets/images/dashboard/animals.jpg" alt="Welcome" />
-    <h1>மதிய வணக்கம்</h1>
+    <img src="assets/images/dashboard/birds.jpg" alt="Welcome" />
+    <h1>வணக்கம்</h1>
     <button onclick="startApp()">உள்நுழை</button>
   </div>
 
@@ -64,12 +64,7 @@
 
     function speak(text) {
       return new Promise(resolve => {
-        if (responsiveVoice.voiceSupport()) {
-          responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
-        } else {
-          alert("ResponsiveVoice not supported on this browser.");
-          resolve();
-        }
+        responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
       });
     }
 
@@ -101,7 +96,7 @@
     }
 
     async function delay(ms) {
-      return new Promise(r => setTimeout(r, ms));
+      return new Promise(res => setTimeout(res, ms));
     }
 
     async function validateWord(word) {
@@ -130,11 +125,11 @@
     async function startApp() {
       document.getElementById("app").innerHTML = `
         <h2>தமிழில் பறவைகள்</h2>
-        <img id="BirdImage" src="" alt="Bird" />
+        <img id="BirdImage" src="" />
         <p id="BirdName"></p>
       `;
 
-      for (const bird of birds) {
+      for (const animal of animals) {
         document.getElementById("BirdImage").src = bird.image;
         document.getElementById("BirdName").innerText = bird.name;
         await validateWord(bird.name);
@@ -144,7 +139,7 @@
       await speak("நன்றி! தமிழில் பறவைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
 
       document.getElementById("app").innerHTML = `
-        <img src="assets/images/wallpapers/logo.gif" alt="Thank You" />
+        <img src="assets/images/wallpapers/logo.gif" />
         <h2>நன்றி! பயிற்சி முடிந்தது!</h2>
       `;
     }
