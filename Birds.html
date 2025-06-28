@@ -2,7 +2,7 @@
 <html lang="ta">
 <head>
   <meta charset="UTF-8" />
-  <title>Tamil Learning App</title>
+  <title>Tamil Learning App - Birds</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
@@ -48,24 +48,24 @@
   </div>
 
   <script>
-            const birds = [
-            { name: "காகம்", image: "assets/images/Birds/crow.jpg" },
-            { name: "கோழி", image: "assets/images/Birds/hen1.jpg" },
-            { name: "சேவல்", image: "assets/images/Birds/hen2.jpg" },
-            { name: "மயில்", image: "assets/images/Birds/peacock.jpg" },
-            { name: "புறா", image: "assets/images/Birds/pegion.jpg" },
-            { name: "கழுகு", image: "assets/images/Birds/eagle.jpg" },
-            { name: "வாத்து", image: "assets/images/Birds/duck.jpg" },
-            { name: "ஆந்தை", image: "assets/images/Birds/owl.jpg" },
-            { name: "கிளி", image: "assets/images/Birds/parrot.jpg" }
-        ];
+    const birds = [
+      { name: "காகம்", image: "assets/images/Birds/crow.jpg" },
+      { name: "கோழி", image: "assets/images/Birds/hen1.jpg" },
+      { name: "சேவல்", image: "assets/images/Birds/hen2.jpg" },
+      { name: "மயில்", image: "assets/images/Birds/peacock.jpg" },
+      { name: "புறா", image: "assets/images/Birds/pegion.jpg" },
+      { name: "கழுகு", image: "assets/images/Birds/eagle.jpg" },
+      { name: "வாத்து", image: "assets/images/Birds/duck.jpg" },
+      { name: "ஆந்தை", image: "assets/images/Birds/owl.jpg" },
+      { name: "கிளி", image: "assets/images/Birds/parrot.jpg" }
+    ];
 
-    async function speak(text) {
+    const maxAttempts = 3;
+
+    function speak(text) {
       return new Promise(resolve => {
         if (responsiveVoice.voiceSupport()) {
-          responsiveVoice.speak(text, "Tamil Female", {
-            onend: resolve
-          });
+          responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
         } else {
           alert("ResponsiveVoice not supported on this browser.");
           resolve();
@@ -73,8 +73,58 @@
       });
     }
 
+    function listen() {
+      return new Promise((resolve, reject) => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "ta-IN";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        const timeout = setTimeout(() => {
+          recognition.abort();
+          reject("timeout");
+        }, 10000);
+
+        recognition.onresult = event => {
+          clearTimeout(timeout);
+          const said = event.results[0][0].transcript.trim();
+          resolve(said);
+        };
+
+        recognition.onerror = () => {
+          clearTimeout(timeout);
+          reject("error");
+        };
+
+        recognition.start();
+      });
+    }
+
     async function delay(ms) {
       return new Promise(r => setTimeout(r, ms));
+    }
+
+    async function validateWord(word) {
+      let attempts = 0;
+      while (attempts < maxAttempts) {
+        await speak(word);
+        try {
+          const userSaid = await listen();
+          console.log("👂 Heard:", userSaid);
+          if (userSaid === word) {
+            await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
+            return true;
+          } else {
+            attempts++;
+            await speak("தவறு. மீண்டும் முயற்சி செய்யுங்கள்.");
+          }
+        } catch {
+          attempts++;
+          await speak("எதுவும் சொல்லவில்லை. மீண்டும் முயற்சி செய்யுங்கள்.");
+        }
+      }
+      await speak("அடுத்த வார்த்தைக்கு செல்லலாம்.");
+      return false;
     }
 
     async function startApp() {
@@ -87,8 +137,8 @@
       for (const bird of birds) {
         document.getElementById("BirdImage").src = bird.image;
         document.getElementById("BirdName").innerText = bird.name;
-        await speak(bird.name);
-        await delay(10000); // Wait for 10 seconds per animal
+        await validateWord(bird.name);
+        await delay(1000);
       }
 
       await speak("நன்றி! தமிழில் பறவைகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
