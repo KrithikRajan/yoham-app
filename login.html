@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YOHAM SPEECH APP</title>
-  <title>Login</title>
+  <title>YOHAM SPEECH APP - Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -67,12 +66,10 @@
   </style>
 </head>
 <body>
-  <!-- Logo image -->
   <img src="assets/images/wallpapers/logo.png" alt="App Logo" class="logo" />
   <h2>YOHAM SPEECH APP</h2>
   <h2>Login</h2>
 
-  <!-- Login-themed image -->
   <img src="assets/images/wallpapers/login.jpg" alt="Login Icon" class="login-img" />
 
   <input type="email" id="loginEmail" placeholder="Email" />
@@ -80,18 +77,33 @@
   <button onclick="login()">Login</button>
 
   <script>
+    // Redirect if already logged in
+    window.onload = function () {
+      const isLoggedIn = localStorage.getItem("loggedIn");
+      if (isLoggedIn === "true") {
+        window.location.href = "dashboard.html";
+      }
+    };
+
     function login() {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
 
       const storedUser = localStorage.getItem(email);
-      if (!storedUser) return alert("User not found");
+      if (!storedUser) {
+        alert("User not found");
+        return;
+      }
 
       const userObj = JSON.parse(storedUser);
       if (userObj.password !== password) {
         alert("Incorrect password");
         return;
       }
+
+      // Set login session on this device
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("loggedInEmail", email);
 
       alert("Login successful!");
       window.location.href = "dashboard.html";
