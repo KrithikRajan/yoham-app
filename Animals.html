@@ -1,173 +1,149 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-    <meta charset="UTF-8">
-    <title>Tamil Learning App</title>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
-    <style>
-         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-            width: 100%;
-            font-family: 'Times New Roman', serif;
-            background-color: darkblue;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            text-align: center;
-        }
-        button {
-            background-color: lightblue;
-            color: black;
-            border: none;
-            padding: 15px 25px;
-            font-size: 20px;
-            margin: 15px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 80%;
-        }
-        button:hover {
-            background-color: deepskyblue;
-        }
-        img {
-            width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 10px;
-        }
-        h1, h2, p {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Tamil Learning App</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_KEY_HERE"></script>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      background-color: darkblue;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+    }
+    button {
+      background-color: lightblue;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      margin: 15px 0;
+      cursor: pointer;
+    }
+    img {
+      max-width: 300px;
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container" id="welcome">
-        <img src="assets/images/dashboard/animals.jpg" alt="Welcome">
-        <h1>மதிய வணக்கம்</h1>
-        <button onclick="loginUser()">உள்நுழை</button>
-    </div>
+  <div class="container" id="app">
+    <img src="assets/images/dashboard/animals.gif" alt="Welcome" />
+    <h1>மதிய வணக்கம்</h1>
+    <button onclick="startApp()">உள்நுழை</button>
+  </div>
 
-    <div class="container" id="training" style="display: none;">
-        <img id="AnimalImage" src="" alt="Training">
+  <script>
+    const animals = [
+      { name: "நாய்", image: "assets/gifs/Dog.gif" },
+      { name: "பூனை", image: "assets/gifs/Cat.gif" },
+      { name: "யானை", image: "assets/gifs/Elephant.gif" },
+      { name: "குதிரை", image: "assets/gifs/Horse.gif" },
+      { name: "சிங்கம்", image: "assets/gifs/Lion.gif" },
+      { name: "புலி", image: "assets/gifs/Tiger.gif" },
+      { name: "ஆடு", image: "assets/gifs/Goat.gif" },
+      { name: "முயல்", image: "assets/gifs/Rabbit.gif" },
+      { name: "ஒட்டகச்சிவிங்கி", image: "assets/gifs/Giraffe.gif" },
+      { name: "குரங்கு", image: "assets/gifs/Monkey.gif" }
+    ];
+
+    const maxAttempts = 3;
+
+    function speak(text) {
+      return new Promise(resolve => {
+        responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
+      });
+    }
+
+    function listen() {
+      return new Promise((resolve, reject) => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "ta-IN";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        const timeout = setTimeout(() => {
+          recognition.abort();
+          reject("timeout");
+        }, 10000);
+
+        recognition.onresult = event => {
+          clearTimeout(timeout);
+          const said = event.results[0][0].transcript.trim();
+          resolve(said);
+        };
+
+        recognition.onerror = () => {
+          clearTimeout(timeout);
+          reject("error");
+        };
+
+        recognition.start();
+      });
+    }
+
+    async function delay(ms) {
+      return new Promise(res => setTimeout(res, ms));
+    }
+
+    async function validateWord(word) {
+      let attempts = 0;
+      while (attempts < maxAttempts) {
+        await speak(word);
+        try {
+          const userSaid = await listen();
+          console.log("👂 Heard:", userSaid);
+          if (userSaid === word) {
+            await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
+            return true;
+          } else {
+            attempts++;
+            await speak("தவறு. மீண்டும் முயற்சி செய்யுங்கள்.");
+          }
+        } catch {
+          attempts++;
+          await speak("எதுவும் சொல்லவில்லை. மீண்டும் முயற்சி செய்யுங்கள்.");
+        }
+      }
+      await speak("அடுத்த வார்த்தைக்கு செல்லலாம்.");
+      return false;
+    }
+
+    async function startApp() {
+      document.getElementById("app").innerHTML = `
         <h2>தமிழில் விலங்குகள்</h2>
+        <img id="AnimalImage" src="" />
         <p id="AnimalName"></p>
-    </div>
+      `;
 
-    <div class="container" id="thankYou" style="display: none;">
-        <img src="assets/images/wallpapers/logo.png" alt="Thank You">
-        <h2>நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
-    </div>
+      for (const animal of animals) {
+        document.getElementById("AnimalImage").src = animal.image;
+        document.getElementById("AnimalName").innerText = animal.name;
+        await validateWord(animal.name);
+        await delay(1000);
+      }
 
-    <script>
-        const animals = [
-            { name: "நாய்", image: "assets/images/Animals/Dog.jpg" },
-            { name: "பூனை", image: "assets/images/Animals/cat.jpg" },
-            { name: "யானை", image: "assets/images/Animals/elephant.jpg" },
-            { name: "குதிரை", image: "assets/images/Animals/horse.jpg" },
-            { name: "சிங்கம்", image: "assets/images/Animals/lion.jpg" },
-            { name: "புலி", image: "assets/images/Animals/Tiger.jpg" },
-            { name: "ஆடு", image: "assets/images/Animals/Goat.jpg" },
-            { name: "முயல்", image: "assets/images/Animals/rabbit.jpg" },
-            { name: "ஒட்டகச்சிவிங்கி", image: "assets/images/Animals/girafee.jpg" },
-            { name: "குரங்கு", image: "assets/images/Animals/Monkey.jpg" }
-        ];
+      await speak("நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
 
-        let index = 0;
-        const maxAttempts = 10;
-
-        function loginUser() {
-            alert("உள்நுழைவு வெற்றிகரமாக முடிந்தது!");
-            showPage("training");
-            startTraining();
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-        }
-
-        function speak(text) {
-            return new Promise(resolve => {
-                responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
-            });
-        }
-
-        function listen() {
-            return new Promise((resolve, reject) => {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = 'ta-IN';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-
-                let timeout = setTimeout(() => {
-                    recognition.abort();
-                    reject("timeout");
-                }, 10000);
-
-                recognition.onresult = (event) => {
-                    clearTimeout(timeout);
-                    resolve(event.results[0][0].transcript.trim());
-                };
-
-                recognition.onerror = () => {
-                    clearTimeout(timeout);
-                    reject("error");
-                };
-
-                recognition.start();
-            });
-        }
-
-        async function trainWord(wordObj) {
-            const { name, image } = wordObj;
-            document.getElementById("AnimalName").innerText = name;
-            document.getElementById("AnimalImage").src = image;
-
-            let attempts = 0;
-            while (attempts < maxAttempts) {
-                await speak(name);
-                try {
-                    const userSaid = await listen();
-                    if (userSaid === name) {
-                        await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
-                        return;
-                    } else {
-                        attempts++;
-                        if (attempts < maxAttempts) {
-                            await speak("மீண்டும் முயற்சி செய்யுங்கள்: " + name);
-                        }
-                    }
-                } catch (e) {
-                    attempts++;
-                    if (attempts < maxAttempts) {
-                        await speak("தவறு ஏற்பட்டது. மீண்டும் முயற்சி செய்யுங்கள்: " + name);
-                    }
-                }
-            }
-            await speak("அடுத்த வார்த்தைக்கு செல்லலாம்.");
-        }
-
-        async function startTraining() {
-            for (let i = 0; i < animals.length; i++) {
-                await trainWord(animals[i]);
-            }
-            await speak("நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
-            showPage("thankYou");
-        }
-    </script>
+      document.getElementById("app").innerHTML = `
+        <img src="assets/images/wallpapers/logo.gif" />
+        <h2>நன்றி! பயிற்சி முடிந்தது!</h2>
+      `;
+    }
+  </script>
 </body>
 </html>
