@@ -1,79 +1,54 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-    <meta charset="UTF-8">
-    <title>Tamil Learning App</title>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
-    <style>
-         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-            width: 100%;
-            font-family: 'Times New Roman', serif;
-            background-color: darkblue;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            text-align: center;
-        }
-        button {
-            background-color: lightblue;
-            color: black;
-            border: none;
-            padding: 15px 25px;
-            font-size: 20px;
-            margin: 15px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 80%;
-        }
-        button:hover {
-            background-color: deepskyblue;
-        }
-        img {
-            width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 10px;
-        }
-        h1, h2, p {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Tamil Learning App</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      background-color: darkblue;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+    }
+    button {
+      background-color: lightblue;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      margin: 15px 0;
+      cursor: pointer;
+    }
+    img {
+      max-width: 300px;
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container" id="welcome">
-        <img src="assets/images/dashboard/fruits.jpg" alt="Welcome">
-        <h1>வணக்கம்</h1>
-        <button onclick="loginUser()">உள்நுழை</button>
-    </div>
+  <div class="container" id="app">
+    <img src="assets/images/dashboard/fruits.jpg" alt="Welcome" />
+    <h1>வணக்கம்</h1>
+    <button onclick="startApp()">உள்நுழை</button>
+  </div>
 
-    <div class="container" id="training" style="display: none;">
-        <img id="fruitsImage" src="" alt="Training">
-        <h2>தமிழில் பழங்கள்</h2>
-        <p id="fruitsName"></p>
-    </div>
-
-    <div class="container" id="thankYou" style="display: none;">
-        <img src="assets/images/wallpapers/logo.png" alt="Thank You">
-        <h2>நன்றி! தமிழில் பழங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!</h2>
-    </div>
-
-    <script>
-        const fruits = [
+  <script>
+            const fruits = [
             { name: "மாம்பழம்", image: "assets/images/Fruits/Mango.jpg" },
             { name: "வாழைப்பழம்", image: "assets/images/Fruits/Banana.jpg" },
             { name: "ஆப்பிள்", image: "assets/images/Fruits/Apple.jpg" },
@@ -85,88 +60,45 @@
             { name: "அன்னாசிப்பழம்", image: "assets/images/Fruits/pineapple.jpg" },
             { name: "ஆரஞ்சு", image: "assets/images/Fruits/orange.jpeg" }
         ];
-        let index = 0;
-        const maxAttempts = 10;
 
-        function loginUser() {
-            alert("உள்நுழைவு வெற்றிகரமாக முடிந்தது!");
-            showPage("training");
-            startTraining();
+    async function speak(text) {
+      return new Promise(resolve => {
+        if (responsiveVoice.voiceSupport()) {
+          responsiveVoice.speak(text, "Tamil Female", {
+            onend: resolve
+          });
+        } else {
+          alert("ResponsiveVoice not supported on this browser.");
+          resolve();
         }
+      });
+    }
 
-        function showPage(id) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-        }
+    async function delay(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
 
-        function speak(text) {
-            return new Promise(resolve => {
-                responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
-            });
-        }
+    async function startApp() {
+      document.getElementById("app").innerHTML = `
+        <h2>தமிழில் பழங்கள்</h2>
+        <img id="FruitImage" src="" alt="Fruit" />
+        <p id="FruitName"></p>
+      `;
 
-        function listen() {
-            return new Promise((resolve, reject) => {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = 'ta-IN';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
+      for (const fruit of fruits) {
+        document.getElementById("FruitImage").src = fruit.image;
+        document.getElementById("FruitName").innerText = fruit.name;
+        await speak(fruit.name);
+        await delay(10000); // Wait for 10 seconds per animal
+      }
 
-                let timeout = setTimeout(() => {
-                    recognition.abort();
-                    reject("timeout");
-                }, 10000);
+      await speak("நன்றி! தமிழில் பழங்கள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
 
-                recognition.onresult = (event) => {
-                    clearTimeout(timeout);
-                    resolve(event.results[0][0].transcript.trim());
-                };
-
-                recognition.onerror = () => {
-                    clearTimeout(timeout);
-                    reject("error");
-                };
-
-                recognition.start();
-            });
-        }
-
-        async function trainWord(wordObj) {
-            const { name, image } = wordObj;
-            document.getElementById("fruitsName").innerText = name;
-            document.getElementById("fruitsImage").src = image;
-
-            let attempts = 0;
-            while (attempts < maxAttempts) {
-                await speak(name);
-                try {
-                    const userSaid = await listen();
-                    if (userSaid === name) {
-                        await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
-                        return;
-                    } else {
-                        attempts++;
-                        if (attempts < maxAttempts) {
-                            await speak("மீண்டும் முயற்சி செய்யுங்கள்: " + name);
-                        }
-                    }
-                } catch (e) {
-                    attempts++;
-                    if (attempts < maxAttempts) {
-                        await speak("தவறு ஏற்பட்டது. மீண்டும் முயற்சி செய்யுங்கள்: " + name);
-                    }
-                }
-            }
-            await speak("அடுத்த வார்த்தைக்கு செல்லலாம்.");
-        }
-
-        async function startTraining() {
-            for (let i = 0; i < fruits.length; i++) {
-                await trainWord(fruits[i]);
-            }
-            await speak("நன்றி! தமிழில் விலங்குகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
-            showPage("thankYou");
-        }
-    </script>
+      document.getElementById("app").innerHTML = `
+        <img src="assets/images/wallpapers/logo.jpg" alt="Thank You" />
+        <h2>நன்றி! பயிற்சி முடிந்தது!</h2>
+      `;
+    }
+  </script>
 </body>
 </html>
