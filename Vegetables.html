@@ -2,7 +2,7 @@
 <html lang="ta">
 <head>
   <meta charset="UTF-8" />
-  <title>Tamil Learning App</title>
+  <title>Tamil Learning App - Vegetables</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
   <style>
     body {
@@ -48,24 +48,24 @@
   </div>
 
   <script>
-            const vegetables = [
-            { name: "கேரட்", image: "assets/images/Vegetables/Carrot.jpg" },
-            { name: "உருளைக்கிழங்கு", image: "assets/images/Vegetables/potato.jpg" },
-            { name: "பீட்ரூட்", image: "assets/images/Vegetables/beetroot.jpg" },
-            { name: "பட்டாணி", image: "assets/images/Vegetables/peas.jpg" },
-            { name: "பீன்ஸ்", image: "assets/images/Vegetables/beans.jpg" },
-            { name: "தக்காளி", image: "assets/images/Vegetables/tomato.jpg" },
-            { name: "மாங்காய்", image: "assets/images/Vegetables/raw mango.jpg" },
-            { name: "வாழைக்காய்", image: "assets/images/Vegetables/raw banana.jpg" },
-            { name: "பாகற்காய்", image: "assets/images/Vegetables/bitter guard.jpg" }
-        ];
+    const vegetables = [
+      { name: "கேரட்", image: "assets/images/Vegetables/Carrot.jpg" },
+      { name: "உருளைக்கிழங்கு", image: "assets/images/Vegetables/potato.jpg" },
+      { name: "பீட்ரூட்", image: "assets/images/Vegetables/beetroot.jpg" },
+      { name: "பட்டாணி", image: "assets/images/Vegetables/peas.jpg" },
+      { name: "பீன்ஸ்", image: "assets/images/Vegetables/beans.jpg" },
+      { name: "தக்காளி", image: "assets/images/Vegetables/tomato.jpg" },
+      { name: "மாங்காய்", image: "assets/images/Vegetables/raw mango.jpg" },
+      { name: "வாழைக்காய்", image: "assets/images/Vegetables/raw banana.jpg" },
+      { name: "பாகற்காய்", image: "assets/images/Vegetables/bitter guard.jpg" }
+    ];
 
-    async function speak(text) {
+    const maxAttempts = 3;
+
+    function speak(text) {
       return new Promise(resolve => {
         if (responsiveVoice.voiceSupport()) {
-          responsiveVoice.speak(text, "Tamil Female", {
-            onend: resolve
-          });
+          responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
         } else {
           alert("ResponsiveVoice not supported on this browser.");
           resolve();
@@ -73,8 +73,58 @@
       });
     }
 
+    function listen() {
+      return new Promise((resolve, reject) => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "ta-IN";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        const timeout = setTimeout(() => {
+          recognition.abort();
+          reject("timeout");
+        }, 10000);
+
+        recognition.onresult = event => {
+          clearTimeout(timeout);
+          const said = event.results[0][0].transcript.trim();
+          resolve(said);
+        };
+
+        recognition.onerror = () => {
+          clearTimeout(timeout);
+          reject("error");
+        };
+
+        recognition.start();
+      });
+    }
+
     async function delay(ms) {
-      return new Promise(r => setTimeout(r, ms));
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function validateWord(word) {
+      let attempts = 0;
+      while (attempts < maxAttempts) {
+        await speak(word);
+        try {
+          const userSaid = await listen();
+          console.log("👂 Heard:", userSaid);
+          if (userSaid === word) {
+            await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
+            return true;
+          } else {
+            attempts++;
+            await speak("தவறு. மீண்டும் முயற்சி செய்யுங்கள்.");
+          }
+        } catch {
+          attempts++;
+          await speak("எதுவும் சொல்லவில்லை. மீண்டும் முயற்சி செய்யுங்கள்.");
+        }
+      }
+      await speak("அடுத்த காய்கறிக்கு செல்லலாம்.");
+      return false;
     }
 
     async function startApp() {
@@ -84,11 +134,11 @@
         <p id="VegetableName"></p>
       `;
 
-      for (const vegeatble of vegetables) {
+      for (const vegetable of vegetables) {
         document.getElementById("VegetableImage").src = vegetable.image;
         document.getElementById("VegetableName").innerText = vegetable.name;
-        await speak(vegetable.name);
-        await delay(10000); // Wait for 10 seconds per animal
+        await validateWord(vegetable.name);
+        await delay(1000);
       }
 
       await speak("நன்றி! தமிழில் காய்கறிகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
