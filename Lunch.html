@@ -84,7 +84,7 @@
         const timeout = setTimeout(() => {
           recognition.abort();
           reject("timeout");
-        }, 20000);
+        }, 10000);
 
         recognition.onresult = event => {
           clearTimeout(timeout);
