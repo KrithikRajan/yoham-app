@@ -2,7 +2,7 @@
 <html lang="ta">
 <head>
   <meta charset="UTF-8" />
-  <title>Tamil Learning App</title>
+  <title>Tamil Learning App - Dinner</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
   <style>
     body {
@@ -48,24 +48,24 @@
   </div>
 
   <script>
-            const dinners = [
-            { name: "இட்லி", image: "assets/images/dashboard/இட்லி.jpg" },
-            { name: "தோசை", image: "assets/images/dashboard/தோசை.jpg" },
-            { name: "வடை", image: "assets/images/dashboard/வடை.jpg" },
-            { name: "சப்பாத்தி", image: "assets/images/dashboard/சப்பாத்தி.jpg" },
-            { name: "பூரி", image: "assets/images/dashboard/பூரி.jpg" },
-            { name: "பொங்கல்", image: "assets/images/dashboard/பொங்கல்.jpg" },
-            { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
-            { name: "சாம்பார்", image: "assets/images/dashboard/சாம்பார்.jpg" },
-            { name: "இடியாப்பம்", image: "assets/images/dashboard/இடியாப்பம்.jpeg" }
-        ];
+    const dinners = [
+      { name: "இட்லி", image: "assets/images/dashboard/இட்லி.jpg" },
+      { name: "தோசை", image: "assets/images/dashboard/தோசை.jpg" },
+      { name: "வடை", image: "assets/images/dashboard/வடை.jpg" },
+      { name: "சப்பாத்தி", image: "assets/images/dashboard/சப்பாத்தி.jpg" },
+      { name: "பூரி", image: "assets/images/dashboard/பூரி.jpg" },
+      { name: "பொங்கல்", image: "assets/images/dashboard/பொங்கல்.jpg" },
+      { name: "சட்னி", image: "assets/images/dashboard/சட்னி.jpg" },
+      { name: "சாம்பார்", image: "assets/images/dashboard/சாம்பார்.jpg" },
+      { name: "இடியாப்பம்", image: "assets/images/dashboard/இடியாப்பம்.jpeg" }
+    ];
 
-    async function speak(text) {
+    const maxAttempts = 3;
+
+    function speak(text) {
       return new Promise(resolve => {
         if (responsiveVoice.voiceSupport()) {
-          responsiveVoice.speak(text, "Tamil Female", {
-            onend: resolve
-          });
+          responsiveVoice.speak(text, "Tamil Female", { onend: resolve });
         } else {
           alert("ResponsiveVoice not supported on this browser.");
           resolve();
@@ -73,8 +73,58 @@
       });
     }
 
+    function listen() {
+      return new Promise((resolve, reject) => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "ta-IN";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        const timeout = setTimeout(() => {
+          recognition.abort();
+          reject("timeout");
+        }, 10000);
+
+        recognition.onresult = event => {
+          clearTimeout(timeout);
+          const said = event.results[0][0].transcript.trim();
+          resolve(said);
+        };
+
+        recognition.onerror = () => {
+          clearTimeout(timeout);
+          reject("error");
+        };
+
+        recognition.start();
+      });
+    }
+
     async function delay(ms) {
-      return new Promise(r => setTimeout(r, ms));
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function validateWord(word) {
+      let attempts = 0;
+      while (attempts < maxAttempts) {
+        await speak(word);
+        try {
+          const userSaid = await listen();
+          console.log("👂 Heard:", userSaid);
+          if (userSaid === word) {
+            await speak("நன்றாகப் பேசினீர்! அடுத்தது.");
+            return true;
+          } else {
+            attempts++;
+            await speak("தவறு. மீண்டும் முயற்சி செய்யுங்கள்.");
+          }
+        } catch {
+          attempts++;
+          await speak("எதுவும் சொல்லவில்லை. மீண்டும் முயற்சி செய்யுங்கள்.");
+        }
+      }
+      await speak("அடுத்த உணவிற்கு செல்லலாம்.");
+      return false;
     }
 
     async function startApp() {
@@ -87,8 +137,8 @@
       for (const dinner of dinners) {
         document.getElementById("DinnerImage").src = dinner.image;
         document.getElementById("DinnerName").innerText = dinner.name;
-        await speak(dinner.name);
-        await delay(10000); // Wait for 10 seconds per animal
+        await validateWord(dinner.name);
+        await delay(1000);
       }
 
       await speak("நன்றி! தமிழில் இரவு உணவுகள் நீங்கள் கற்றுக்கொண்டீர்கள்!");
