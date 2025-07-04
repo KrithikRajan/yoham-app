@@ -2,7 +2,7 @@
 <html lang="ta">
 <head>
   <meta charset="UTF-8">
-  <title>Daily Schedule Assistant</title>
+  <title>YOHAM Speech App</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js?key=ng4M6EUA"></script>
   <style>
     body {
@@ -13,6 +13,12 @@
       padding: 40px;
       color: #fff;
     }
+
+    h1 {
+      color: #fff;
+      text-shadow: 2px 2px 4px #000;
+    }
+
     button {
       font-size: 18px;
       padding: 12px 25px;
@@ -23,29 +29,30 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #45a049;
-    }
-    h1 {
-      color: #fff;
-      text-shadow: 2px 2px 4px #000;
     }
   </style>
 </head>
 <body>
+
   <h1>YOHAM SPEECH APP</h1>
   <h1>உங்கள் தினசரி திட்ட உதவியாளர்</h1>
+
   <button onclick="scheduleLogic()">திட்டத்தைச் சரிபார்க்க</button>
-  <button onclick="sayTime()">தற்போதைய நேரம் சொல்லவும்</button>
+  <button onclick="sayCurrentTime()">தற்போதைய நேரம் சொல்லவும்</button>
   <button onclick="startSpeechPractice()">பேச்சுப் பயிற்சி</button>
 
   <script>
+    // 🔹 Utility to get current time in total minutes
     function getCurrentMinutes() {
       const now = new Date();
       return now.getHours() * 60 + now.getMinutes();
     }
 
-    function sayTime() {
+    // 🔹 Say current time in Tamil
+    function sayCurrentTime() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
@@ -53,13 +60,16 @@
       responsiveVoice.speak(message, "Tamil Female");
     }
 
-    function redirectTo(page, speakText) {
-      responsiveVoice.speak(speakText, "Tamil Female");
-      setTimeout(() => {
-        window.location.href = page;
-      }, 3000);
+    // 🔹 Speak and redirect after a delay
+    function redirectTo(page, message) {
+      responsiveVoice.speak(message, "Tamil Female", {
+        onend: () => {
+          window.location.href = page;
+        }
+      });
     }
 
+    // 🔹 Core scheduling logic based on time slots
     function scheduleLogic() {
       const mins = getCurrentMinutes();
 
@@ -92,13 +102,15 @@
       }
     }
 
+    // 🔹 Speech practice button action
     function startSpeechPractice() {
-  responsiveVoice.speak("பேச்சுப் பயிற்சி தொடங்குகிறது.", "Tamil Female");
-  setTimeout(() => {
-    window.location.href = "Games.html";
-  }, 3000);
-}
-
+      responsiveVoice.speak("பேச்சுப் பயிற்சி தொடங்குகிறது.", "Tamil Female", {
+        onend: () => {
+          window.location.href = "Games.html";
+        }
+      });
+    }
   </script>
+
 </body>
 </html>
